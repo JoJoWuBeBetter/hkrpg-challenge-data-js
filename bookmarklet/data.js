@@ -9,7 +9,6 @@ loadScript(
 
 async function getData() {
   await getUserGameRolesByCookie(GAME_BIZ);
-  await getFp();
   await getChallenge(roleData.game_uid);
 }
 
