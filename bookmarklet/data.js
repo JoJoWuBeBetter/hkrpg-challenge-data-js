@@ -168,6 +168,7 @@ function getDS(params) {
 
   // 打印时间戳、随机数和数据签名，用于调试和记录
   console.log(`${t},${r},${ds}`);
+  return `${t},${r},${ds}`;
 }
 
 function generateUUIDv4() {
