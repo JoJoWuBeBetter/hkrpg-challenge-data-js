@@ -6,7 +6,8 @@ loadScript(
 );
 
 function getData() {
-  roleData = getUserGameRolesByCookie();
+  getUserGameRolesByCookie();
+  console.log(roleData);
 }
 
 function getUserGameRolesByCookie() {
@@ -26,12 +27,11 @@ function getUserGameRolesByCookie() {
         }
         return res.json(); // 解析响应为 JSON
       })
-      .then((data) => {
-        console.log(data);
-        if(data.retcode!=0){
-          throw new Error(data.message);
+      .then((res) => {
+        if(res.retcode != 0) {
+          throw new Error(res.message);
         }
-        resolve(data.list[0]); // 如果获取成功，解决 Promise
+        resolve(res.data.list[0]); // 如果获取成功，解决 Promise
       })
       .catch((error) => {
         console.error("用户信息请求失败:", error);
