@@ -51,12 +51,12 @@ function getChallenge(roleId) {
   });
 }
 
-function getFp() {
-  const url = "https://public-data-api.mihoyo.com/device-fp/api/getFp";
-  return httpPost(url, null, null).then((res) => {
-    rp = res.data.device_fp;
-  });
-}
+// function getFp() {
+//   const url = "https://public-data-api.mihoyo.com/device-fp/api/getFp";
+//   return httpPost(url, null, null).then((res) => {
+//     rp = res.data.device_fp;
+//   });
+// }
 
 function httpGet(url, headers = {}, params = {}) {
   if (
