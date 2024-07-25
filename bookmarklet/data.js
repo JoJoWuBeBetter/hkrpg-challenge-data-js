@@ -1,5 +1,6 @@
 let roleData;
-let gameBiz = "hkrpg_cn";
+let GAME_BIZ = "hkrpg_cn";
+let fp = "38d7fbd5d3e64";
 
 loadScript(
   "https://cdn.bootcdn.net/ajax/libs/blueimp-md5/2.18.0/js/md5.min.js",
@@ -7,19 +8,55 @@ loadScript(
 );
 
 async function getData() {
-  await getUserGameRolesByCookie({game_biz: gameBiz });
-  console.log("2:" + roleData);
+  await getUserGameRolesByCookie(GAME_BIZ);
+  await getFp();
+  await getChallenge(roleData.game_uid);
 }
 
-function getUserGameRolesByCookie(params) {
+function getUserGameRolesByCookie(gameBiz) {
   const url =
     "https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie";
-  return httpGet(url, { Cookie: getCookie() }, params).then((res) => {
+  const params = {
+    game_biz: gameBiz,
+  };
+  const headers = {
+    Cookie: getCookie(),
+  };
+  return httpGet(url, headers, params).then((res) => {
     roleData = res.data.list[0];
   });
 }
 
-function getChallenge() {}
+function getChallenge(roleId) {
+  const url =
+    "https://api-takumi-record.mihoyo.com/game_record/app/hkrpg/api/challenge";
+  const params = {
+    role_id: roleId,
+    server: "prod_gf_cn",
+    isPrev: "",
+    type: "challenge",
+    schedule_type: 1,
+    need_all: true,
+  };
+  const headers = {
+    "x-rpc-app_version": "2.72.2",
+    DS: getDS(params),
+    "x-rpc-device_id": generateUUIDv4(),
+    "x-rpc-device_fp": fp,
+    "x-rpc-client_type": "5",
+    Cookie: getCookie(),
+  };
+  return httpGet(url, headers, params).then((res) => {
+    console.log(res);
+  });
+}
+
+function getFp() {
+  const url = "https://public-data-api.mihoyo.com/device-fp/api/getFp";
+  return httpPost(url, null, null).then((res) => {
+    rp = res.data.device_fp;
+  });
+}
 
 function httpGet(url, headers = {}, params = {}) {
   if (
@@ -37,6 +74,28 @@ function httpGet(url, headers = {}, params = {}) {
         "Content-Type": "application/json",
         ...headers, // 合并用户提供的头部
       },
+    })
+      .then((response) => {
+        // 检查响应状态
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); // 解析响应为 JSON
+      })
+      .then((data) => resolve(data)) // 处理成功响应
+      .catch((error) => reject(error)); // 处理错误
+  });
+}
+
+function httpPost(url, headers = {}, data) {
+  return new Promise((resolve, reject) => {
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...headers, // 合并用户提供的头部
+      },
+      body: JSON.stringify(data), // 将数据转换为 JSON 字符串
     })
       .then((response) => {
         // 检查响应状态
@@ -110,4 +169,12 @@ function getDS(params) {
 
   // 打印时间戳、随机数和数据签名，用于调试和记录
   console.log(`${t},${r},${ds}`);
+}
+
+function generateUUIDv4() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0,
+      v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 }
