@@ -1,4 +1,5 @@
 var roleData;
+
 loadScript(
   "https://cdn.bootcdn.net/ajax/libs/blueimp-md5/2.18.0/js/md5.min.js",
   getData
