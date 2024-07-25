@@ -7,37 +7,37 @@ loadScript(
 
 function getData() {
   getUserGameRolesByCookie();
-  console.log(this.roleData);
+  console.log("2:"+this.roleData);
 }
 
 function getUserGameRolesByCookie() {
   var url =
     "https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz=hkrpg_cn";
+  httpGet(url, { Cookie: getCookie() }).then((res) => {
+    this.roleData = res.data.list[0];
+    console.log("1:" + this.roleData);
+  });
+}
+
+function httpGet(url, headers = {}) {
   return new Promise((resolve, reject) => {
     fetch(url, {
       method: "GET",
       credentials: "include",
       headers: {
-        Cookie: getCookie(),
+        "Content-Type": "application/json",
+        ...headers, // 合并用户提供的头部
       },
     })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Network response was not ok");
+      .then((response) => {
+        // 检查响应状态
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return res.json(); // 解析响应为 JSON
+        return response.json(); // 解析响应为 JSON
       })
-      .then((res) => {
-        if(res.retcode != 0) {
-          throw new Error(res.message);
-        }
-        this.roleData = res.data.list[0];
-        resolve(res); // 如果获取成功，解决 Promise
-      })
-      .catch((error) => {
-        console.error("用户信息请求失败:", error);
-        reject(error); // 如果出错，拒绝 Promise
-      });
+      .then((data) => resolve(data)) // 处理成功响应
+      .catch((error) => reject(error)); // 处理错误
   });
 }
 function getCookie() {
