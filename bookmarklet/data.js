@@ -1,4 +1,5 @@
 let roleData;
+let gameBiz = "hkrpg_cn";
 
 loadScript(
   "https://cdn.bootcdn.net/ajax/libs/blueimp-md5/2.18.0/js/md5.min.js",
@@ -6,23 +7,28 @@ loadScript(
 );
 
 async function getData() {
-  await getUserGameRolesByCookie();
+  await getUserGameRolesByCookie({game_biz: gameBiz });
   console.log("2:" + roleData);
 }
 
-function getUserGameRolesByCookie() {
+function getUserGameRolesByCookie(params) {
   const url =
-    "https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz=hkrpg_cn";
-  return httpGet(url, { Cookie: getCookie() }).then((res) => {
+    "https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie";
+  return httpGet(url, { Cookie: getCookie() }, params).then((res) => {
     roleData = res.data.list[0];
   });
 }
 
-function getChallenge(){
+function getChallenge() {}
 
-}
-
-function httpGet(url, headers = {}) {
+function httpGet(url, headers = {}, params = {}) {
+  if (
+    params !== undefined &&
+    params !== null &&
+    Object.keys(params).length !== 0
+  ) {
+    url += "?" + jsonToQueryString(params);
+  }
   return new Promise((resolve, reject) => {
     fetch(url, {
       method: "GET",
@@ -72,6 +78,13 @@ function loadScript(url, callback) {
   document.head.appendChild(script);
 }
 
+function jsonToQueryString(json) {
+  return Object.keys(json)
+    .sort()
+    .map((key) => `${key}=${json[key]}`)
+    .join("&");
+}
+
 /**
  * 根据传入的参数对象生成一个数据签名。
  * 数据签名的生成基于参数对象的内容、一个固定的盐值、一个随机数和当前时间戳。
@@ -80,11 +93,8 @@ function loadScript(url, callback) {
  */
 function getDS(params) {
   // 将参数对象的键排序，并转换为键值对字符串形式
-  let q = Object.keys(params)
-    .sort()
-    .map((key) => `${key}=${params[key]}`)
-    .join("&");
-    console.log(q);
+  let q = jsonToQueryString(params);
+  console.log(q);
 
   // 定义一个固定的盐值，用于数据签名的加密过程
   let salt = "xV8v4Qu54lUKrEYFZkJhB8cuOh9Asafs";
