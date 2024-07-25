@@ -21,10 +21,17 @@ function getUserGameRolesByCookie() {
       },
     })
       .then((res) => {
-        if (res.retcode != 0) {
-          throw new Error("请求错误：" + res.message);
+        if (!res.ok) {
+          throw new Error("Network response was not ok");
         }
-        return res["data"]["list"][0];
+        return res.json(); // 解析响应为 JSON
+      })
+      .then((data) => {
+        console.log(data);
+        if(data.retcode!=0){
+          throw new Error(data.message);
+        }
+        resolve(data.list[0]); // 如果获取成功，解决 Promise
       })
       .catch((error) => {
         console.error("用户信息请求失败:", error);
