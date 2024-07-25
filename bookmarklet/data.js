@@ -7,7 +7,7 @@ loadScript(
 
 function getData() {
   getUserGameRolesByCookie();
-  console.log("2:"+this.roleData);
+  console.log("2:" + this.roleData);
 }
 
 function getUserGameRolesByCookie() {
