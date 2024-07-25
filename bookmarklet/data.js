@@ -6,7 +6,7 @@ loadScript(
 );
 
 function getData() {
-  this.roleData = getUserGameRolesByCookie();
+  getUserGameRolesByCookie();
   console.log(this.roleData);
 }
 
@@ -31,7 +31,8 @@ function getUserGameRolesByCookie() {
         if(res.retcode != 0) {
           throw new Error(res.message);
         }
-        resolve(res.data.list[0]); // 如果获取成功，解决 Promise
+        this.roleData = res.data.list[0];
+        resolve(res); // 如果获取成功，解决 Promise
       })
       .catch((error) => {
         console.error("用户信息请求失败:", error);
