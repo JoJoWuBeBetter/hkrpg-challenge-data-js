@@ -24,7 +24,7 @@ function getUserGameRolesByCookie() {
         if (res.retcode != 0) {
           throw new Error("请求错误：" + res.message);
         }
-        return res['data']['list'][0];
+        return res["data"]["list"][0];
       })
       .catch((error) => {
         console.error("用户信息请求失败:", error);
