@@ -18,6 +18,10 @@ function getUserGameRolesByCookie() {
   });
 }
 
+function getChallenge(){
+
+}
+
 function httpGet(url, headers = {}) {
   return new Promise((resolve, reject) => {
     fetch(url, {
@@ -80,12 +84,13 @@ function getDS(params) {
     .sort()
     .map((key) => `${key}=${params[key]}`)
     .join("&");
+    console.log(q);
 
   // 定义一个固定的盐值，用于数据签名的加密过程
   let salt = "xV8v4Qu54lUKrEYFZkJhB8cuOh9Asafs";
 
   // 获取一个在100001-200000之间的随机数
-  let r = Math.floor(Math.random() * 1000000) + 1000001;
+  let r = Math.floor(Math.random() * 100000) + 100001;
 
   // 获取十位数的时间戳
   let t = Math.floor(Date.now() / 1000);
