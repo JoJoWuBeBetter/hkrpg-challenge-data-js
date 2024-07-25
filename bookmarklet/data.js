@@ -5,17 +5,16 @@ loadScript(
     getData
 );
 
-function getData() {
-    getUserGameRolesByCookie();
+async function getData() {
+    await getUserGameRolesByCookie();
     console.log("2:" + roleData);
 }
 
 function getUserGameRolesByCookie() {
     const url =
         "https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz=hkrpg_cn";
-    httpGet(url, {Cookie: getCookie()}).then((res) => {
+    return  httpGet(url, {Cookie: getCookie()}).then((res) => {
         roleData = res.data.list[0];
-        console.log("1:" + roleData);
     });
 }
 
