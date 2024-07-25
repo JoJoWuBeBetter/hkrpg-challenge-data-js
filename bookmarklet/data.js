@@ -6,8 +6,8 @@ loadScript(
 );
 
 function getData() {
-  getUserGameRolesByCookie();
-  console.log(roleData);
+  this.roleData = getUserGameRolesByCookie();
+  console.log(this.roleData);
 }
 
 function getUserGameRolesByCookie() {
