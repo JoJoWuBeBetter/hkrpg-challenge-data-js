@@ -70,8 +70,8 @@ function getChallenge(roleId) {
     schedule_type: 1,
     need_all: true,
   };
-  headers.Cookie = getCookie();
-  headers.DS = getDS(params);
+  headers["Cookie"] = getCookie();
+  headers["DS"] = getDS(params);
   return httpGet(url, headers, params).then((res) => {
     if (res.retcode !== 0) {
       throw new Error(`code: {res.retcode}, msg: {res.message}`);
@@ -88,8 +88,8 @@ function getAvatarBase(roleId, server) {
     role_id: roleId,
     server: server,
   };
-  headers.Cookie = getCookie();
-  headers.DS = getDS(params);
+  headers["Cookie"] = getCookie();
+  headers["DS"] = getDS(params);
   return httpGet(url, headers, params).then((res) => {
     if (res.retcode !== 0) {
       throw new Error(`code: {res.retcode}, msg: {res.message}`);
