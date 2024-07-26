@@ -1,4 +1,6 @@
 let roleData;
+let challengeData;
+let avatarList;
 let GAME_BIZ = "hkrpg_cn";
 let fpList = [
   // LIO-AN00
@@ -14,6 +16,14 @@ let fpList = [
   // NX627J
   "38d7fc5aaf340",
 ];
+let headers = {
+  "x-rpc-app_version": "2.72.2",
+  // DS: getDS(params),
+  "x-rpc-device_id": generateUUIDv4(),
+  "x-rpc-device_fp": getFp(),
+  "x-rpc-client_type": "5",
+  // Cookie: getCookie(),
+};
 
 loadScript(
   "https://cdn.bootcdn.net/ajax/libs/blueimp-md5/2.18.0/js/md5.min.js",
@@ -23,6 +33,13 @@ loadScript(
 async function getData() {
   await getUserGameRolesByCookie(GAME_BIZ);
   await getChallenge(roleData.game_uid);
+  await getAvatarBase(roleData.game_uid, roleData.region);
+}
+
+function printAll() {
+  console.log(roleData);
+  console.log(challengeData);
+  console.log(avatarList);
 }
 
 function getUserGameRolesByCookie(gameBiz) {
@@ -35,6 +52,9 @@ function getUserGameRolesByCookie(gameBiz) {
     Cookie: getCookie(),
   };
   return httpGet(url, headers, params).then((res) => {
+    if (res.retcode !== 0) {
+      throw new Error(`code: {res.retcode}, msg: {res.message}`);
+    }
     roleData = res.data.list[0];
   });
 }
@@ -50,26 +70,33 @@ function getChallenge(roleId) {
     schedule_type: 1,
     need_all: true,
   };
-  const headers = {
-    "x-rpc-app_version": "2.72.2",
-    DS: getDS(params),
-    "x-rpc-device_id": generateUUIDv4(),
-    "x-rpc-device_fp": getFp(),
-    "x-rpc-client_type": "5",
-    Cookie: getCookie(),
-  };
+  headers.Cookie = getCookie();
+  headers.DS = getDS(params);
   return httpGet(url, headers, params).then((res) => {
-    console.log(res);
+    if (res.retcode !== 0) {
+      throw new Error(`code: {res.retcode}, msg: {res.message}`);
+    }
+    challengeData = res.data;
   });
 }
 
-// function getFp() {
-//   const url = "https://public-data-api.mihoyo.com/device-fp/api/getFp";
-//   return httpPost(url, null, null).then((res) => {
-//     rp = res.data.device_fp;
-//   });
-// }
-
+function getAvatarBase(roleId, server) {
+  const url =
+    "https://api-takumi-record.mihoyo.com/game_record/app/hkrpg/api/avatar/basic";
+  const params = {
+    rolePageAccessNotAllowed: "",
+    role_id: roleId,
+    server: server,
+  };
+  headers.Cookie = getCookie();
+  headers.DS = getDS(params);
+  return httpGet(url, headers, params).then((res) => {
+    if (res.retcode !== 0) {
+      throw new Error(`code: {res.retcode}, msg: {res.message}`);
+    }
+    avatarList = res.data.avatar_list;
+  });
+}
 function httpGet(url, headers = {}, params = {}) {
   if (
     params !== undefined &&
