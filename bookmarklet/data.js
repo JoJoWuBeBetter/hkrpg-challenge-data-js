@@ -1,6 +1,19 @@
 let roleData;
 let GAME_BIZ = "hkrpg_cn";
-let fp = "38d7fbd5d3e64";
+let fpList = [
+  // LIO-AN00
+  "38d7fc5a81fc7",
+  // 小米9
+  "38d7fbd5d3e64",
+  // TAS-AN00
+  "38d7fc5aac4b8",
+  // V1916A
+  "38d7fc5aad22f",
+  // SM-G9750
+  "38d7fc5aae59e",
+  // NX627J
+  "38d7fc5aaf340",
+];
 
 loadScript(
   "https://cdn.bootcdn.net/ajax/libs/blueimp-md5/2.18.0/js/md5.min.js",
@@ -41,7 +54,7 @@ function getChallenge(roleId) {
     "x-rpc-app_version": "2.72.2",
     DS: getDS(params),
     "x-rpc-device_id": generateUUIDv4(),
-    "x-rpc-device_fp": fp,
+    "x-rpc-device_fp": getFp(),
     "x-rpc-client_type": "5",
     Cookie: getCookie(),
   };
@@ -110,6 +123,11 @@ function httpPost(url, headers = {}, data) {
 
 function getCookie() {
   return document.cookie;
+}
+
+function getFp() {
+  // 根据fpList的大小,随机获取其中一个
+  return fpList[Math.floor(Math.random() * fpList.length)];
 }
 
 function loadScript(url, callback) {
