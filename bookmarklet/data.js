@@ -6,15 +6,7 @@ let fpList = [
   // LIO-AN00
   "38d7fc5a81fc7",
   // 小米9
-  "38d7fbd5d3e64",
-  // TAS-AN00
-  "38d7fc5aac4b8",
-  // V1916A
-  "38d7fc5aad22f",
-  // SM-G9750
-  "38d7fc5aae59e",
-  // NX627J
-  "38d7fc5aaf340",
+  "38d7fbd5d3e64"
 ];
 let headers = {
   "x-rpc-app_version": "2.72.2",
